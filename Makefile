@@ -25,6 +25,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 clean:
 	@echo "Cleaning..."
-	@rm -rf -f "$(OBJ)"
+	@rm -dir -f $(OBJ_DIR)
 	@echo "Cleaned Successfully"
 

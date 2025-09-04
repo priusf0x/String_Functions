@@ -4,13 +4,18 @@ int write(const void* buf, size_t count);
 int put_s(const char * string);
 const char * str_chr(const char * string, int target_symbol);
 size_t str_len(const char * string);
+char * str_cpy(char* dest, const char* src);
+char * strn_cpy(char* dest, const char* src, size_t count);
+char * str_cat(char * destptr, const char * srcptr);
+char * strn_cat(char * destptr, const char * srcptr, size_t count);
+char * f_gets(char *str, int num, FILE *stream);
+char * str_dup(const char *str);
 
 int write(const void* buf, size_t count)
 {
     const char * buf_pointer = (const char *) buf;
-    int buf_size = count / sizeof(char);
 
-    for (int buf_counter = 0; buf_counter < buf_size; buf_counter++, buf_pointer++)
+    for (size_t buf_counter = 0; buf_counter < count; buf_counter++, buf_pointer++)
     {
         if (putc(*buf_pointer, stdout) == EOF)
         {

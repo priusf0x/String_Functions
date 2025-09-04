@@ -1,5 +1,6 @@
 #include "not_stdio.h"
 #include <stdio.h> //!!ИСКЛЮЧИТЕЛЬНО ДЛЯ ОТЛАДКИ!!
+#include <stdlib.h>
 
 int put_s(const char * string)
 {
@@ -7,7 +8,7 @@ int put_s(const char * string)
 
     while (symbol != '\0')
     {
-        if (write(&symbol, sizeof(char)) != 0)
+        if (write(&symbol, 1) != 0)
         {
             return EOF;
         }
@@ -54,18 +55,128 @@ size_t str_len(const char * string)
     return symbol_counter;
 }
 
+char * str_cpy(char* dest, const char* src)
+{
+    int counter = 0;
+    char symbol = * src;
+
+    while (symbol != '\0')
+    {
+        dest[counter] = symbol;
+        counter++;
+        symbol = src[counter];
+    }
+
+    dest[counter] = '\0';
+
+    return dest;
+}
+
+char * strn_cpy(char* dest, const char* src, size_t count)
+{
+    size_t counter = 0;
+    char symbol = * src;
+
+    while ((symbol != '\0') && (counter < count))
+    {
+        dest[counter] = symbol;
+        counter++;
+        symbol = src[counter];
+    }
+
+    dest[counter] = '\0';
+
+    return dest;
+}
+
+char * str_cat(char * destptr, const char * srcptr)
+{
+    size_t counter = 0;
+    while (destptr[counter] != '\0')
+    {
+        counter++;
+    }
+
+    str_cpy(destptr + counter, srcptr);
+
+    return destptr;
+}
+
+char * strn_cat(char * destptr, const char * srcptr, size_t count)
+{
+    size_t counter = 0;
+    while (destptr[counter] != '\0')
+    {
+        counter++;
+    }
+
+    strn_cpy(destptr + counter, srcptr, count - counter);
+
+    return destptr;
+}
+
+char * f_gets(char *str, int num, FILE *stream)
+{
+    int counter = 0;
+    char character = (char) fgetc(stream);
+
+    while (character != EOF && character != '\n' && counter < num - 1)
+    {
+        str[counter] = character;
+        counter++;
+        character = (char) fgetc(stream);
+    }
+
+    str[counter] = '\0';
+
+    return str;
+}
+
+char * str_dup(const char * str)
+{
+    char * duplicate = (char *) malloc(sizeof(char) * (str_len(str) + 1));
+
+    str_cpy(duplicate, str);
+
+    return duplicate;
+}
+
 int main()
 {
+    char mas[10] = {0};
     const char * pointer = "abc";
     //проверка на пут
     put_s("abc");
+
     //проверка на стрчр
     printf("%p %p\n", str_chr(pointer, 'e'), pointer);
+
     //проверка на стрлн
-    printf("%zu", str_len(pointer));
+    printf("%zu\n", str_len(pointer));
+
+    //проверка на стр_копи
+    strn_cpy(mas, pointer, sizeof(mas) / sizeof(mas[1]));
+    printf("%s\n", mas);
+
+    //проверка на стр_кэт
+    str_cat(mas, pointer);
+    printf("%s\n", mas);
+
+    //проверка на стрн_кэт
+    strn_cat(mas, pointer, sizeof(mas) / sizeof(mas[1]));
+    printf("%s\n", mas);
+
+    //проверка на фгет сэ
+    f_gets(mas, 4, stdin);
+    printf("%s\n", mas);
+
+    //проверка на фгет сэ
+    char * duplicate = str_dup(pointer);
+    printf("%s", duplicate);
+    free(duplicate);
+
+
     return 0;
 }
-
-
 
 

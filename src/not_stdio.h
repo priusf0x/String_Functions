@@ -10,6 +10,7 @@ char * str_cat(char * destptr, const char * srcptr);
 char * strn_cat(char * destptr, const char * srcptr, size_t count);
 char * f_gets(char *str, int num, FILE *stream);
 char * str_dup(const char *str);
+ssize_t getline(char ** lineptr, size_t * n, FILE * stream);
 
 int write(const void* buf, size_t count)
 {

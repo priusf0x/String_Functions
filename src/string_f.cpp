@@ -1,6 +1,7 @@
 #include "not_stdio.h"
 #include <stdio.h> //!!ИСКЛЮЧИТЕЛЬНО ДЛЯ ОТЛАДКИ!!
 #include <stdlib.h>
+#include <assert.h>
 
 int put_s(const char * string)
 {
@@ -57,6 +58,8 @@ size_t str_len(const char * string)
 
 char * str_cpy(char* dest, const char* src)
 {
+    assert(dest != NULL);
+
     int counter = 0;
     char symbol = * src;
 
@@ -74,6 +77,8 @@ char * str_cpy(char* dest, const char* src)
 
 char * strn_cpy(char* dest, const char* src, size_t count)
 {
+    assert(dest != NULL);
+
     size_t counter = 0;
     char symbol = * src;
 
@@ -91,32 +96,29 @@ char * strn_cpy(char* dest, const char* src, size_t count)
 
 char * str_cat(char * destptr, const char * srcptr)
 {
-    size_t counter = 0;
-    while (destptr[counter] != '\0')
-    {
-        counter++;
-    }
+    assert(destptr != NULL);
 
-    str_cpy(destptr + counter, srcptr);
+    str_cpy(destptr + str_len(destptr), srcptr);
 
     return destptr;
 }
 
 char * strn_cat(char * destptr, const char * srcptr, size_t count)
 {
-    size_t counter = 0;
-    while (destptr[counter] != '\0')
-    {
-        counter++;
-    }
+    assert(destptr != NULL);
 
-    strn_cpy(destptr + counter, srcptr, count - counter);
+    size_t counter = str_len(destptr);
+
+    strn_cpy(destptr + counter, srcptr, count - counter -1);
 
     return destptr;
 }
 
 char * f_gets(char *str, int num, FILE *stream)
 {
+    assert(str != NULL);
+    assert(stream != NULL);
+
     int counter = 0;
     char character = (char) fgetc(stream);
 
@@ -141,9 +143,19 @@ char * str_dup(const char * str)
     return duplicate;
 }
 
+// ssize_t getline(char **lineptr, size_t *n, FILE *stream)
+// {
+//     assert(lineptr != NULL);
+//
+//     if (*lineptr == NULL)
+//     {
+//
+//     }
+// }
+
 int main()
 {
-    char mas[10] = {0};
+    char mas[9] = {0};
     const char * pointer = "abc";
     //проверка на пут
     put_s("abc");
@@ -155,7 +167,7 @@ int main()
     printf("%zu\n", str_len(pointer));
 
     //проверка на стр_копи
-    strn_cpy(mas, pointer, sizeof(mas) / sizeof(mas[1]));
+    strn_cpy(mas, pointer, sizeof(mas) / sizeof(mas[0]));
     printf("%s\n", mas);
 
     //проверка на стр_кэт
@@ -163,7 +175,7 @@ int main()
     printf("%s\n", mas);
 
     //проверка на стрн_кэт
-    strn_cat(mas, pointer, sizeof(mas) / sizeof(mas[1]));
+    strn_cat(mas, pointer, sizeof(mas) / sizeof(mas[0]));
     printf("%s\n", mas);
 
     //проверка на фгет сэ
@@ -179,4 +191,6 @@ int main()
     return 0;
 }
 
+//how to make getline with infinite buffer?
+//any wished for code
 
